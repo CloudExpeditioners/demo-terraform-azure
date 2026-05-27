@@ -17,7 +17,7 @@ provider "azurerm" {
 
 provider "random" {}
 
-# Generate random suffix for globally unique names
+# Generate random suffix for globally unique names 1
 resource "random_string" "suffix" {
   length  = 6
   lower   = true
