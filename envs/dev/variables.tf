@@ -13,17 +13,11 @@ variable "resource_group_name" {
 variable "storage_account_name" {
   description = "Name of the storage account (must be globally unique)"
   type        = string
-  default     = "demostg12345"
+  default     = "demostg"
 }
 
-variable "app_service_plan_name" {
-  description = "Name of the App Service Plan"
+variable "key_vault_name" {
+  description = "Name of the Key Vault (must be globally unique)"
   type        = string
-  default     = "demo-app-plan"
-}
-
-variable "web_app_name" {
-  description = "Name of the Linux Web App (must be globally unique)"
-  type        = string
-  default     = "demo-app-12345"
+  default     = "demokv"
 }

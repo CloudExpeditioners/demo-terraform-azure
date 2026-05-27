@@ -13,17 +13,17 @@ output "storage_account_name" {
   description = "Name of the storage account"
 }
 
-output "app_service_plan_id" {
-  value       = azurerm_service_plan.main.id
-  description = "ID of the App Service Plan"
+output "storage_container_name" {
+  value       = azurerm_storage_container.data.name
+  description = "Name of the storage container"
 }
 
-output "web_app_id" {
-  value       = azurerm_linux_web_app.main.id
-  description = "ID of the Linux Web App"
+output "key_vault_id" {
+  value       = azurerm_key_vault.main.id
+  description = "ID of the Key Vault"
 }
 
-output "web_app_default_hostname" {
-  value       = azurerm_linux_web_app.main.default_hostname
-  description = "Default hostname of the Web App"
+output "key_vault_uri" {
+  value       = azurerm_key_vault.main.vault_uri
+  description = "URI of the Key Vault"
 }

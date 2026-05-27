@@ -27,6 +27,7 @@ resource "random_string" "suffix" {
 
 locals {
   storage_account_name_unique = "${var.storage_account_name}${random_string.suffix.result}"
+  key_vault_name_unique       = "${var.key_vault_name}${random_string.suffix.result}"
 }
 
 # Resource Group
@@ -48,28 +49,40 @@ resource "azurerm_storage_account" "main" {
   }
 }
 
-# App Service Plan
-resource "azurerm_service_plan" "main" {
-  name                = var.app_service_plan_name
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  os_type             = "Linux"
-  sku_name            = "B1"
+# Get current Azure client config
+data "azurerm_client_config" "current" {}
 
-  tags = {
-    environment = "dev"
-  }
+# Storage Container
+resource "azurerm_storage_container" "data" {
+  name                  = "data"
+  storage_account_id    = azurerm_storage_account.main.id
+  container_access_type = "private"
 }
 
-# Linux Web App
-resource "azurerm_linux_web_app" "main" {
-  name                = var.web_app_name
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.main.id
+# Key Vault
+resource "azurerm_key_vault" "main" {
+  name                            = local.key_vault_name_unique
+  location                        = azurerm_resource_group.main.location
+  resource_group_name             = azurerm_resource_group.main.name
+  enabled_for_disk_encryption     = true
+  enabled_for_template_deployment = true
+  tenant_id                       = data.azurerm_client_config.current.tenant_id
+  sku_name                        = "standard"
+  soft_delete_retention_days      = 7
 
-  site_config {
-    always_on = false
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      "Get",
+      "List",
+    ]
+
+    secret_permissions = [
+      "Get",
+      "List",
+    ]
   }
 
   tags = {
