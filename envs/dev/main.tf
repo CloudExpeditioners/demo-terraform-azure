@@ -44,7 +44,7 @@ resource "azurerm_storage_container" "data" {
 }
 
 resource "azurerm_key_vault" "main" {
-  name                            = "kv-${replace(local.naming_prefix, "-", "")}"
+  name                            = "kv-${replace(local.naming_prefix, "-", "")}-${random_string.storage_suffix.result}"
   location                        = azurerm_resource_group.main.location
   resource_group_name             = azurerm_resource_group.main.name
   enabled_for_deployment          = true
