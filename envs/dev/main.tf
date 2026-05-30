@@ -9,7 +9,7 @@ resource "random_string" "suffix" {
 # Get current Azure client config
 data "azurerm_client_config" "current" {}
 
-# Locals for naming convention
+# Locals for naming conventions
 locals {
   name_prefix          = "${var.app_name}-${var.environment}"
   storage_account_name = "${replace(var.app_name, "-", "")}${replace(var.environment, "-", "")}${random_string.suffix.result}"
