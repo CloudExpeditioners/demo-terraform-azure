@@ -1,32 +1,29 @@
 variable "app_name" {
-  description = "Application name"
+  description = "Application name used for resource naming"
   type        = string
-  default     = "demo"
 
   validation {
-    condition     = length(var.app_name) > 0 && length(var.app_name) <= 10
-    error_message = "App name must be between 1 and 10 characters."
+    condition     = can(regex("^[a-z0-9-]{1,16}$", var.app_name))
+    error_message = "app_name must be 1-16 characters and contain only lowercase letters, numbers, and hyphens."
   }
 }
 
 variable "environment" {
-  description = "Environment name"
+  description = "Deployment environment"
   type        = string
-  default     = "dev"
 
   validation {
     condition     = contains(["dev", "staging", "prod"], var.environment)
-    error_message = "Environment must be one of: dev, staging, prod."
+    error_message = "environment must be one of: dev, staging, prod."
   }
 }
 
 variable "location" {
-  description = "Azure region for resources"
+  description = "Azure region where resources will be deployed"
   type        = string
-  default     = "westeurope"
 
   validation {
-    condition     = length(var.location) > 0
-    error_message = "Location cannot be empty."
+    condition     = var.location != ""
+    error_message = "location must not be empty."
   }
 }

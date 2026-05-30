@@ -7,17 +7,14 @@ resource "random_string" "suffix" {
   special = false
 }
 
-# Get current Azure client config
 data "azurerm_client_config" "current" {}
 
-# Locals for naming conventions
 locals {
   name_prefix          = "${var.app_name}-${var.environment}"
-  storage_account_name = "${replace(var.app_name, "-", "")}${replace(var.environment, "-", "")}${random_string.suffix.result}"
-  key_vault_name       = "${replace(var.app_name, "-", "")}${replace(var.environment, "-", "")}${random_string.suffix.result}"
+  storage_account_name = lower("${replace(var.app_name, "-", "")}${replace(var.environment, "-", "")}${random_string.suffix.result}")
+  key_vault_name       = lower("${replace(var.app_name, "-", "")}${replace(var.environment, "-", "")}${random_string.suffix.result}")
 }
 
-# Resource Group
 resource "azurerm_resource_group" "main" {
   name     = "${local.name_prefix}-rg"
   location = var.location
@@ -28,7 +25,6 @@ resource "azurerm_resource_group" "main" {
   }
 }
 
-# Storage Account
 resource "azurerm_storage_account" "main" {
   name                     = local.storage_account_name
   resource_group_name      = azurerm_resource_group.main.name
@@ -42,14 +38,12 @@ resource "azurerm_storage_account" "main" {
   }
 }
 
-# Storage Container
 resource "azurerm_storage_container" "data" {
   name                  = "data"
   storage_account_name  = azurerm_storage_account.main.name
   container_access_type = "private"
 }
 
-# Key Vault
 resource "azurerm_key_vault" "main" {
   name                            = local.key_vault_name
   location                        = azurerm_resource_group.main.location
